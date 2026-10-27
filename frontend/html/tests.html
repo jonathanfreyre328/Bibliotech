@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bibliotech - Pruebas API</title>
+    <link rel="stylesheet" href="../css/w3.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+</head>
+<body class="w3-dark-grey">
+
+    <div class="w3-container w3-padding-32">
+        <h1 class="w3-text-yellow"><b>Laboratorio de Pruebas API</b></h1>
+        <p class="w3-text-white">Consola de pruebas de autenticacion, administracion y materiales (PDF)</p>
+
+        <div class="w3-row-padding">
+            <div id="test-container" class="w3-col l6 m12 s12">
+                <h3 class="w3-text-white">Ejecutar Pruebas</h3>
+            </div>
+
+            <div class="w3-col l6 m12 s12">
+                <h3 class="w3-text-white">Resultado de la API</h3>
+                <div id="api-console" class="w3-code w3-black w3-border-yellow w3-border w3-padding" style="min-height: 400px; overflow-y: auto;">
+                    Esperando ejecución...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/components/table.js"></script>
+    <script src="../js/components/modal.js"></script>
+    <script src="../js/services/apiService.js"></script>
+    <script src="../js/tests/testUtils.js"></script>
+    <script src="../js/tests/authTests.js"></script>
+    <script src="../js/tests/adminTests.js"></script>
+    <script src="../js/tests/profileTests.js"></script>
+    <script src="../js/tests/materialTests.js"></script>
+    <script src="../js/tests/securityTests.js"></script>
+    <script src="../js/tests/tableTests.js"></script>
+    <script src="../js/tests/modalTests.js"></script>
+    <script src="../js/tests/apiServiceTests.js"></script>
+</body>
+</html>

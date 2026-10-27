@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bibliotech - Panel de administración</title>
+    <link rel="stylesheet" href="../css/w3.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+</head>
+<body>
+
+<div class="w3-bar w3-yellow w3-card">
+    <span class="w3-bar-item"><b>CONTROL DE ADMINISTRACIÓN</b></span>
+    <button class="w3-bar-item w3-button w3-right btn-logout">Salir</button>
+</div>
+
+<div class="w3-container w3-padding-32">
+    <h2 class="w3-text-white">Panel de administración</h2>
+    <p>Gestión global de usuarios y recursos académicos.</p>
+
+    <!-- Usuarios -->
+    <div id="tab-users" class="tab-content">
+        <div class="w3-margin-bottom">
+            <button class="w3-button w3-orange w3-round-large" onclick="openChangeCareerModal()"><b>CAMBIAR CARRERA</b></button>
+        </div>
+        <div id="usersTable"></div>
+    </div>
+
+    <!-- Profesores -->
+    <div id="tab-professors" class="tab-content" style="display:none">
+        <div class="w3-margin-bottom">
+            <button class="w3-button w3-yellow w3-round-large" onclick="openCreateProfessorModal()"><b>+ NUEVO PROFESOR</b></button>
+        </div>
+        <div id="professorsTable"></div>
+    </div>
+
+    <!-- Carreras -->
+    <div id="tab-careers" class="tab-content" style="display:none">
+        <div class="w3-margin-bottom">
+            <button class="w3-button w3-yellow w3-round-large" onclick="openCreateCareerModal()"><b>+ NUEVA CARRERA</b></button>
+        </div>
+        <div id="careersTable"></div>
+    </div>
+
+    <!-- Materias -->
+    <div id="tab-subjects" class="tab-content" style="display:none">
+        <div class="w3-margin-bottom">
+            <button class="w3-button w3-yellow w3-round-large" onclick="openCreateSubjectModal()"><b>+ NUEVA MATERIA</b></button>
+        </div>
+        <div id="subjectsTable"></div>
+    </div>
+
+    <!-- Clases -->
+    <div id="tab-classes" class="tab-content" style="display:none">
+        <div class="w3-margin-bottom">
+            <button class="w3-button w3-yellow w3-round-large" onclick="openCreateClassModal()"><b>+ NUEVA CLASE</b></button>
+            <button class="w3-button w3-blue w3-round-large" onclick="openAssignStudentModal()"><b>+ ASIGNAR ALUMNO</b></button>
+        </div>
+        <div id="classesTable"></div>
+    </div>
+
+    <!-- Perfil -->
+    <div id="tab-profile" class="tab-content" style="display:none">
+        <h1 class="w3-text-white">Mi perfil</h1>
+        <p class="w3-text-white">Consultá y actualizá tus datos personales.</p>
+        <div id="profileCard" class="vault-card w3-padding"></div>
+    </div>
+</div>
+
+<script src="../js/services/apiService.js"></script>
+<script src="../js/components/uiHandlers.js"></script>
+<script src="../js/components/modal.js"></script>
+<script src="../js/components/table.js"></script>
+<script src="../js/components/navigation.js"></script>
+<script src="../js/utils/authHelper.js"></script>
+<script src="../js/utils/dateHelper.js"></script>
+<script src="../js/utils/routeGuard.js"></script>
+<script src="../js/frontControllers/adminFrontController.js"></script>
+<script src="../js/frontControllers/profileFrontController.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        RouteGuard.init(['admin']);
+        Navigation.renderNavBar('admin', 'users', navCallback);
+        adminController.init();
+    });
+
+    // Carga perezosa de las tablas; Perfil se refresca en cada visita.
+    const loadedTabs = new Set(['users']);
+
+    function navCallback(tabId) {
+        if (tabId === 'profile') {
+            profileController.loadProfile();
+            return;
+        }
+        if (loadedTabs.has(tabId)) return;
+        loadedTabs.add(tabId);
+        loadTabData(tabId);
+    }
+
+    function loadTabData(tabId) {
+        switch (tabId) {
+            case 'users':
+                adminController.loadUsers();
+                break;
+            case 'professors':
+                adminController.loadProfessors();
+                break;
+            case 'careers':
+                adminController.loadCareers();
+                break;
+            case 'subjects':
+                adminController.loadSubjects();
+                break;
+            case 'classes':
+                adminController.loadClasses();
+                break;
+            case 'profile':
+                profileController.loadProfile();
+                break;
+        }
+    }
+</script>
+</body>
+</html>

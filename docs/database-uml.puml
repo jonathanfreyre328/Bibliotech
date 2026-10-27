@@ -1,0 +1,136 @@
+@startuml database-uml
+hide methods
+hide stereotypes
+skinparam linetype ortho
+skinparam entity {
+    BackgroundColor #F8F9FA
+    BorderColor #343A40
+}
+
+title Bibliotech - Database UML
+
+entity roles {
+    * id : INT <<PK>>
+    --
+    name : VARCHAR(20) <<UQ>>
+}
+
+entity users {
+    * id : INT <<PK>>
+    --
+    username : VARCHAR(50) <<UQ>>
+    password : VARCHAR(255)
+    first_name : VARCHAR(80)
+    last_name : VARCHAR(80)
+    dni : VARCHAR(30) <<UQ>>
+    email : VARCHAR(150) <<UQ>>
+    phone : VARCHAR(40)
+    birth_date : DATE
+    career_id : INT <<FK>>
+    active : BOOLEAN
+    created_at : TIMESTAMP
+}
+
+entity users_roles {
+    * user_id : INT <<PK, FK>>
+    * role_id : INT <<PK, FK>>
+}
+
+entity careers {
+    * id : INT <<PK>>
+    --
+    name : VARCHAR(120) <<UQ>>
+    duracion_años : TINYINT UNSIGNED
+    active : BOOLEAN
+}
+
+entity subjects {
+    * id : INT <<PK>>
+    --
+    career_id : INT <<FK>>
+    año : TINYINT UNSIGNED
+    name : VARCHAR(120)
+    active : BOOLEAN
+    .. unique(career_id, año, name) ..
+}
+
+entity classes {
+    * id : INT <<PK>>
+    --
+    subject_id : INT <<FK>>
+    professor_id : INT <<FK>>
+    active : BOOLEAN
+    created_at : TIMESTAMP
+}
+
+entity student_subject_requests {
+    * id : INT <<PK>>
+    --
+    student_id : INT <<FK>>
+    class_id : INT <<FK>>
+    status : ENUM
+    requested_at : TIMESTAMP
+    reviewed_at : TIMESTAMP
+    .. unique(student_id, class_id) ..
+}
+
+entity materials {
+    * id : INT <<PK>>
+    --
+    title : VARCHAR(180)
+    description : TEXT
+    original_filename : VARCHAR(255)
+    author : VARCHAR(180)
+    file_path : VARCHAR(255)
+    uploaded_by : INT <<FK>>
+    active : BOOLEAN
+    created_at : TIMESTAMP
+}
+
+entity material_classes {
+    * material_id : INT <<PK, FK>>
+    * class_id : INT <<PK, FK>>
+}
+
+roles ||--o{ users_roles : assigns
+users ||--o{ users_roles : has
+careers ||--o{ users : contains
+careers ||--o{ subjects : offers
+subjects ||--o{ classes : has
+users ||--o{ classes : teaches
+users ||--o{ student_subject_requests : creates
+classes ||--o{ student_subject_requests : receives
+users ||--o{ materials : uploads
+materials ||--o{ material_classes : published_in
+classes ||--o{ material_classes : exposes
+
+note right of subjects
+  Una materia es unica para:
+  carrera + año + nombre.
+  No existe tabla de años
+  academicos: el año es un
+  atributo (subjects.año) y
+  careers.duracion_años define
+  la duracion de la carrera.
+end note
+
+note right of classes
+  Una clase concreta tiene
+  exactamente un profesor.
+  Cambiar el profesor crea
+  una clase nueva.
+end note
+
+note bottom of student_subject_requests
+  Solo una solicitud aprobada
+  concede acceso a los PDFs
+  de la clase.
+end note
+
+note bottom of material_classes
+  Borrar material o clase
+  elimina las relaciones por
+  ON DELETE CASCADE.
+end note
+
+@enduml

@@ -1,0 +1,27 @@
+{
+    "name": "Sample Vault Dev Environment",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:22-bookworm",
+    
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:1": {
+            "configureZshAsDefaultShell": true
+        },
+        "ghcr.io/devcontainers/features/mariadb:1": {} 
+    },
+
+    "postCreateCommand": "chmod +x ./.devcontainer/setup.sh && ./.devcontainer/setup.sh",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "mtxr.sqltools",
+                "mtxr.sqltools-driver-mysql"
+            ]
+        }
+    },
+
+    "forwardPorts": [3000, 3306],
+    "remoteUser": "node"
+}

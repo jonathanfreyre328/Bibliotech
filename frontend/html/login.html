@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Bibliotech - Ingreso</title>
+    <link rel="stylesheet" href="../css/w3.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+</head>
+<body class="w3-display-container" style="height:100vh;">
+
+    <div class="w3-display-middle w3-mobile" style="width:400px;">
+        <div class="w3-card-4 vault-card w3-padding-large w3-round-large">
+            <h2 class="w3-center w3-text-yellow"><b>BIBLIOTECH</b></h2>
+            <p class="w3-center">Ingresa a la biblioteca educativa</p>
+            
+            <form id="loginForm">
+                <label>Usuario</label>
+                <input class="w3-input w3-border w3-round w3-black w3-text-white" type="text" id="username" required>
+                
+                <br>
+                <label>Contraseña</label>
+                <input class="w3-input w3-border w3-round w3-black w3-text-white" type="password" id="password" required>
+                
+                <br>
+                <button type="submit" class="w3-button w3-yellow w3-block w3-round-large"><b>ENTRAR</b></button>
+            </form>
+            
+            <p class="w3-small w3-center">¿No tienes cuenta? <a href="/register" class="w3-text-yellow">Regístrate</a></p>
+        </div>
+    </div>
+
+    <script src="../js/services/apiService.js"></script>
+    <script src="../js/components/uiHandlers.js"></script>
+    <script src="../js/utils/authHelper.js"></script>
+    <script src="../js/utils/routeGuard.js"></script>
+    <script src="../js/frontControllers/authFrontController.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            RouteGuard.init();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+@startuml class-uml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam packageStyle rectangle
+
+title Bibliotech - Class UML
+
+package "Routes" {
+    class AuthRoutes
+    class AdminRoutes
+    class AcademicRoutes
+    class MaterialRoutes
+}
+
+package "Controllers" {
+    class AuthController {
+        +register(req, res)
+        +login(req, res)
+        +careers(req, res)
+        +me(req, res)
+        +updateProfile(req, res)
+        +changePassword(req, res)
+    }
+
+    class AdminController {
+        +getAllUsers(req, res)
+        +setUserActive(req, res)
+        +createProfessor(req, res)
+        +updateProfessor(req, res)
+        +careers(req, res)
+        +createCareer(req, res)
+        +updateCareer(req, res)
+        +subjects(req, res)
+        +createSubject(req, res)
+        +updateSubject(req, res)
+        +setSubjectActive(req, res)
+        +getAllClasses(req, res)
+        +createClass(req, res)
+        +updateClass(req, res)
+        +setClassActive(req, res)
+        +deleteClass(req, res)
+        +deleteCareer(req, res)
+        +deleteSubject(req, res)
+        +deleteUser(req, res)
+        +assignStudent(req, res)
+        +changeCareer(req, res)
+    }
+
+    class AcademicController {
+        +catalog(req, res)
+        +professorClasses(req, res)
+        +requests(req, res)
+        +studentRequests(req, res)
+        +requestClass(req, res)
+        +updateRequest(req, res)
+        +cancelRequest(req, res)
+        +accessibleClasses(req, res)
+    }
+
+    class MaterialController {
+        +upload(req, res)
+        +list(req, res)
+        +update(req, res)
+        +remove(req, res)
+        +download(req, res)
+        +view(req, res)
+    }
+}
+
+package "Repositories" {
+    class UserRepository {
+        +findByUsername(username)
+        +findById(id)
+        +create(userData, role)
+        +findAll()
+        +setActive(id, active)
+        +updateProfile(id, data)
+        +findPasswordById(id)
+        +updatePassword(id, passwordHash)
+    }
+
+    class AcademicRepository {
+        +catalog()
+        +findAllClasses(filters)
+        +requestsForProfessor(professorId)
+        +requestsForStudent(studentId)
+        +updateRequest(requestId, professorId, status)
+        +cancelRequest(requestId, studentId)
+        +requestClass(studentId, classId)
+        +accessibleClasses(studentId)
+    }
+
+    class MaterialRepository {
+        +create(data, classIds, isAdmin)
+        +accessibleByStudent(studentId)
+        +ownedByProfessor(userId)
+        +fileForUser(materialId, userId, role)
+        +update(materialId, userId, data, classIds, isAdmin)
+        +remove(materialId, userId, isAdmin)
+    }
+
+    class AdminRepository {
+        +createCareer(name, duracionAños)
+        +getAllSubjects(careerId, año, includeInactive)
+        +createSubject(careerId, año, name)
+        +updateCareer(id, data)
+        +updateSubject(id, data)
+        +updateProfessor(id, data)
+        +updateClass(id, data)
+        +createClass(subjectId, professorId, copyFromClassId)
+        +setClassActive(classId, active)
+        +setSubjectActive(subjectId, active)
+        +assignStudent(classId, studentId)
+        +changeCareer(studentId, careerId)
+        +deleteClass(classId)
+        +deleteCareer(id)
+        +deleteSubject(id)
+        +deleteUser(id)
+    }
+}
+
+package "Security and Validation" {
+    class AuthMiddleware {
+        +verifyToken(req, res, next)
+        +requireRoles(...roles)
+        +isAdmin(req, res, next)
+    }
+
+    class ValidationHandler {
+        -validators : Validation[]
+        +with(validation)
+        +validate(target, language)
+    }
+
+    class UserValidator {
+        +validateStudent(target, language)
+    }
+
+    class ProfileValidator {
+        +validateProfile(target, language)
+        +validatePasswordChange(target, language)
+    }
+
+    class MulterConfig {
+        +pdfFile : Middleware
+        +maxSize : 50 MB
+        +allowedMime : application/pdf
+    }
+}
+
+package "Infrastructure" {
+    class DatabasePool {
+        +execute(sql, params)
+        +getConnection()
+    }
+
+    class FileHelper {
+        +UPLOAD_ROOT
+        +resolveUploadPath(relativePath)
+        +deleteUpload(relativePath)
+        +deleteUploadedFile(file)
+    }
+}
+
+package "Frontend" {
+    class ApiService {
+        +request(endpoint, method, data, isFormData)
+        +formatErrors(err)
+    }
+
+    class Navigation {
+        +renderNavBar(role, activeTab, onTabChange)
+    }
+
+    class AuthHelper {
+        +saveSession(token, role)
+        +getToken()
+        +getRole()
+        +logout()
+    }
+
+    class AdminFrontController {
+        +init()
+        +loadUsers()
+        +loadProfessors()
+        +loadCareers()
+        +loadSubjects()
+        +loadClasses()
+        +openCreateProfessorModal()
+        +openEditProfessorModal(professor)
+        +openCreateCareerModal()
+        +openEditCareerModal(career)
+        +openCreateSubjectModal()
+        +openEditSubjectModal(subject)
+        +openCreateClassModal()
+        +openEditClassModal(classData)
+        +openAssignStudentModal(preSelectedClassId)
+        +openChangeCareerModal(preSelectedUser)
+    }
+
+    class ProfessorFrontController {
+        +loadRequests()
+        +loadStudents()
+        +loadMyClasses()
+    }
+
+    class StudentFrontController {
+        +loadRequests()
+    }
+
+    class MaterialsFrontController {
+        +loadProfessorClasses()
+        +loadProfessorMaterials()
+        +loadStudentMaterials()
+        +deleteMaterial(materialId)
+        +openEditMaterialModal(material)
+        +viewMaterialOnline(material)
+        +downloadMaterial(material)
+    }
+
+    class ProfileFrontController {
+        +loadProfile()
+        +renderProfile(user)
+        +openEditProfile()
+        +openChangePassword()
+    }
+
+    note as N1
+      Motor <b>Table</b>: motor de tablas con
+      busqueda, filtros select y orden,
+      usado por todas las grillas de los
+      3 paneles.
+      <b>Modal</b>: Modal.confirm / Modal.form.
+      <b>RouteGuard</b>: dirige cada HTML al
+      dashboard correcto segun token y rol.
+    end note
+}
+
+AuthRoutes --> AuthController
+AdminRoutes --> AdminController
+AcademicRoutes --> AcademicController
+MaterialRoutes --> MaterialController
+
+AuthController --> UserRepository
+AuthController --> UserValidator
+AuthController --> ProfileValidator
+AdminController --> UserRepository
+AdminController --> AdminRepository
+AcademicController --> AcademicRepository
+MaterialController --> MaterialRepository
+MaterialController --> MulterConfig
+MaterialController --> FileHelper
+
+UserRepository --> DatabasePool
+AcademicRepository --> DatabasePool
+MaterialRepository --> DatabasePool
+AdminRepository --> DatabasePool
+AuthController --> DatabasePool
+
+AuthRoutes ..> AuthMiddleware
+AdminRoutes ..> AuthMiddleware
+AcademicRoutes ..> AuthMiddleware
+MaterialRoutes ..> AuthMiddleware
+ValidationHandler <.. UserValidator
+ValidationHandler <.. ProfileValidator
+
+AdminFrontController --> ApiService
+ProfessorFrontController --> ApiService
+StudentFrontController --> ApiService
+MaterialsFrontController --> ApiService
+ProfileFrontController --> ApiService
+AdminFrontController --> Navigation
+ProfessorFrontController --> Navigation
+StudentFrontController --> Navigation
+MaterialsFrontController --> AuthHelper
+ProfileFrontController --> AuthHelper
+
+note right of AuthController
+  El alumno se registra con
+  carrera y datos personales.
+  Los profesores solo los crea
+  el administrador.
+end note
+
+note right of MaterialController
+  El profesor es propietario de
+  sus PDFs. El create/update
+  verifica que las clases
+  asignadas le pertenezcan y
+  esten activas. El remove
+  borra registro, relaciones
+  y archivo fisico.
+end note
+
+note right of StudentFrontController
+  Pestañas del alumno:
+  Mis Materiales y la unica
+  pestaña Solicitudes
+  (cascada + tabla + cancelar
+  pendientes).
+end note
+
+note left of AuthMiddleware
+  verifyToken exige el JWT
+  por header Authorization.
+  El visor y la descarga usan
+  fetch + Blob, no un embed
+  con token en la URL.
+end note
+
+@enduml
