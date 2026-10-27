@@ -1,5 +1,5 @@
 # Bibliotech
-<<<<<<< HEAD
+
 
 Aplicación web **cerrada** para la gestión institucional de material educativo en PDF.
 
